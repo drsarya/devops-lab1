@@ -1,0 +1,22 @@
+---
+- name: configure webserver without tls
+  hosts: nodes
+  gather_facts: true
+  become: true
+  vars_files:
+    - group-vars/all.yaml
+  roles:
+    - configure_nginx
+    - configure_cert
+
+  post_tasks:
+    #   Статус 200 не получить, так как ругается на сертификат 
+    # - name: check web site from control server
+    #   uri:
+    #     url: "https://{{ ansible_host }}:{{ nginx_port_with_tls }}"
+    #     return_content: true
+    #   connection: local
+    #   register: example_webpage_out
+    #   failed_when: example_webpage_out.status != 200
+
+ 

@@ -1,0 +1,35 @@
+---
+# tasks file for configure_cert
+- name: Creates directory for certs
+  file:
+    path: /etc/certs
+    state: directory
+  tags: [cert]
+
+- name: Create key pair for the server
+  openssl_privatekey:
+    path: /etc/certs/server.rsa
+    size: 2048
+  tags: [cert]
+
+- name: Create certificate signing request
+  openssl_csr:
+    common_name: "AboutMe"
+    country_name: "RU"
+    email_address: "123@hmail.com"
+    locality_name: "Voronezh"
+    organization_name: "AboutMe"
+    path: server.csr
+    subject_alt_name: 
+      - "DNS:*.about.me"
+      - "DNS:about.me"
+    privatekey_path: /etc/certs/server.rsa
+  tags: [cert]
+
+- name: Create self-signed certificate
+  openssl_certificate:
+    csr_path: server.csr
+    path: /etc/certs/server.crt
+    provider: selfsigned
+    privatekey_path: /etc/certs/server.rsa
+  tags: [cert]
